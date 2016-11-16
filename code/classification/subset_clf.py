@@ -14,7 +14,7 @@ def main():
     X = df.values
     X_train, X_test, y_train, y_test = train_test_split(X,y)
     rf_params = {'n_estimators':[10,500,1000,1500,2000],'max_depth':[3,5,7,9,11,None]}
-    rf = RandomForestClassifier(n_estimators=10, max_depth=5)
+    rf = RandomForestClassifier(n_estimators=10,max_depth=5,class_weight='balanced',n_jobs=-1)
     rf.fit(X_train,y_train)
     print rf.score(X_test,y_test)
     # print 'Running Grid Search...'
