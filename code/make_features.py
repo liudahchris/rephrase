@@ -22,10 +22,12 @@ def condense_segments(arr,new_size=4):
         expand = new_size/arr.shape[0]
         new_arr = []
         for subarr in arr:
-            new_arr+=(list(np.repeat(subarr[np.newaxis,:],expand,axis=0)))
+            if type(subarr)==np.ndarray:
+                subarr = subarr[np.newaxis,:]
+            new_arr+=(list(np.repeat(subarr,expand,axis=0)))
         if np.array(new_arr).shape[0] < new_size:
             num_rows_to_add = new_size - np.array(new_arr).shape[0]
-            new_arr+=(list(np.repeat(arr[-1][np.newaxis,:],num_rows_to_add,axis=0)))
+            new_arr+=(list(np.repeat(arr[-1],num_rows_to_add,axis=0)))
     else:
         return arr.flatten()
     return list(np.array(new_arr).flatten())
@@ -88,7 +90,9 @@ def make_segment_cols(colname,num_vals,num_segments=4):
 
 
 if __name__=='__main__':
-    NUM_SEGMENTS = 400
+    NUM_SEGMENTS = 5
+    data_path = '../classification_data/subset_data/{}'
+
     msd_subset_path='/Users/christopherliu/Desktop/projects/music_project/data/MillionSongSubset'
     msd_subset_data_path=os.path.join(msd_subset_path,'data')
     msd_subset_addf_path=os.path.join(msd_subset_path,'AdditionalFiles')
@@ -99,4 +103,4 @@ if __name__=='__main__':
         cols+=make_segment_cols(feat,num,NUM_SEGMENTS)
     data = make_data(NUM_SEGMENTS)
     df = pd.DataFrame(data=data,columns=cols).set_index('track_id')
-    df.to_csv('features_nov_17.csv')
+    # df.to_csv(data_path.format('features_4_segments.csv'))

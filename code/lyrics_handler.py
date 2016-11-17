@@ -83,3 +83,35 @@ def new_complete_to_csv():
     out = path.format('complete_bow.csv')
     df.to_csv(out)
     print 'Complete'
+
+def aws_complete_to_csv():
+    path = '../../lyrics/data/{}'
+    conn = sqlite3.connect(path.format('mxm_dataset.db'))
+    with open(path.format('vocab.txt')) as f:
+        vocab = f.read().split(',')
+    print 'Fetching Track IDs...'
+    q = 'SELECT DISTINCT track_id FROM lyrics;'
+    tracks = [track[0] for track in conn.execute(q).fetchall()]
+    print 'Done fetching Track IDs'
+
+    q = "SELECT word, count FROM lyrics WHERE track_id='{}';"
+    df = pd.DataFrame(data=np.zeros((len(tracks),len(vocab))),\
+                        index=tracks,columns=vocab)
+
+    print 'Writing to DataFrame...'
+    for i,track in enumerate(tracks):
+        q_ = q.format(track)
+        word_counts = conn.execute(q_).fetchall()
+        for word,count in word_counts:
+            word = unidecode(word)
+            df.loc[track][word] = count
+        if i%500==0: print '{} tracks completed'.format(i)
+    conn.close()
+    print 'Done writing to DataFrame'
+    print 'Writing to csv...'
+    out = path.format('aws_complete_bow.csv')
+    df.to_csv(out)
+    print 'Complete'
+
+if __name__=='__main__':
+    aws_complete_to_csv()
