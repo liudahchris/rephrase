@@ -85,7 +85,7 @@ def new_complete_to_csv():
     print 'Complete'
 
 def aws_complete_to_csv():
-    path = '../../lyrics/data/{}'
+    path = '../lyrics/{}'
     conn = sqlite3.connect(path.format('mxm_dataset.db'))
     with open(path.format('vocab.txt')) as f:
         vocab = f.read().split(',')
