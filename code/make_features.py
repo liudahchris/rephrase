@@ -11,12 +11,24 @@ from setup_path import setup_path
 setup_path()
 import hdf5_getters as GETTERS
 
-def condense_segments(arr):
-    div = arr.shape[0]/4
-    averaged = []
-    for i in xrange(4):
-        averaged.append(np.mean(arr[i*div:(i+1)*div],axis=0))
-    return list(np.array(averaged).flatten())
+def condense_segments(arr,new_size=4):
+    '''Condense or inflate segments so each song has same number of segments'''
+    if arr.shape[0]>=new_size:
+        div = arr.shape[0]/new_size
+        new_arr = []
+        for i in xrange(new_size):
+            new_arr.append(np.mean(arr[i*div:(i+1)*div],axis=0))
+    elif arr.shape[0] < new_size:
+        expand = new_size/arr.shape[0]
+        new_arr = []
+        for subarr in arr:
+            new_arr+=(list(np.repeat(subarr[np.newaxis,:],expand,axis=0)))
+        if np.array(new_arr).shape[0] < new_size:
+            num_rows_to_add = new_size - np.array(new_arr).shape[0]
+            new_arr+=(list(np.repeat(arr[-1][np.newaxis,:],num_rows_to_add,axis=0)))
+    else:
+        return arr.flatten()
+    return list(np.array(new_arr).flatten())
 
 def apply_to_subset_files(basedir,func=lambda x: x,ext='.h5'):
     cnt = 0
@@ -33,7 +45,7 @@ def apply_to_subset_files(basedir,func=lambda x: x,ext='.h5'):
 def strtimedelta(starttime,stoptime):
     return str(datetime.timedelta(seconds=stoptime-starttime))
 
-def main():
+def make_data(num_segments=4):
     df = pd.read_csv('../classification_data/subset_data/labeled_df.csv')
     tracks = df.track_id.values
 
@@ -58,7 +70,7 @@ def main():
                 row_data.append(func(h5))
             for func in segment_funcs:
                 segment_mat = func(h5)
-                row_data+=condense_segments(segment_mat)
+                row_data+=condense_segments(segment_mat,new_size=num_segments)
             list_of_rows.append(row_data)
         h5.close()
         return None
@@ -70,12 +82,13 @@ def main():
 
     return list_of_rows
 
-def make_segment_cols(colname,num_vals):
+def make_segment_cols(colname,num_vals,num_segments=4):
     s = 'seg{}'+colname+'{}'
-    return [s.format(i,j) for i in range(1,5) for j in range(1,num_vals+1)]
+    return [s.format(i,j) for i in range(1,num_segments+1) for j in range(1,num_vals+1)]
 
 
 if __name__=='__main__':
+    NUM_SEGMENTS = 400
     msd_subset_path='/Users/christopherliu/Desktop/projects/music_project/data/MillionSongSubset'
     msd_subset_data_path=os.path.join(msd_subset_path,'data')
     msd_subset_addf_path=os.path.join(msd_subset_path,'AdditionalFiles')
@@ -83,7 +96,7 @@ if __name__=='__main__':
     segment_data = [('pitch',12),('timbre',12),('loudness',1),('loudness_time',1)]
     cols = ['track_id','duration','key','loudness','mode','tempo','time_sig']
     for feat,num in segment_data:
-        cols+=make_segment_cols(feat,num)
-    data = main()
+        cols+=make_segment_cols(feat,num,NUM_SEGMENTS)
+    data = make_data(NUM_SEGMENTS)
     df = pd.DataFrame(data=data,columns=cols).set_index('track_id')
-    df.to_csv('features_nov_16.csv')
+    df.to_csv('features_nov_17.csv')
