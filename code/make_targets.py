@@ -4,6 +4,7 @@ import sqlite3
 from nltk.corpus import stopwords
 from unidecode import unidecode
 from collections import Counter
+import cPickle as pickle
 
 def drop_empty(df):
     '''Drops rows of data where values are all 0'''
