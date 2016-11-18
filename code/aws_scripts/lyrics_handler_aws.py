@@ -5,6 +5,7 @@ from unidecode import unidecode
 import boto
 import os
 import graphlab
+from nltk.corpus import stopwords
 
 def write_to_csv():
     path = '../data/lyrics/data/{}'
@@ -36,6 +37,8 @@ def write_to_csv():
 
 
 def subset_to_csv_sframe():
+    stop_words = stopwords.words('english') + stopwords.words('spanish') + \
+                 stopwords.words('german') + stopwords.words('french')
     path = '../../data/lyrics/data/{}'
     conn = sqlite3.connect(path.format('mxm_dataset.db'))
     with open(path.format('vocab.txt')) as f:
@@ -53,8 +56,12 @@ def subset_to_csv_sframe():
     print 'Writing to SFrame...'
     for i,track in enumerate(subset_with_lyrics):
         q_ = q.format(track)
-        # word_counts = conn.execute(q_).fetchall()
-        word_count_dict = dict(conn.execute(q_).fetchall())
+        word_counts = conn.execute(q_).fetchall()
+        filtered = []
+        for word, count in word_counts:
+            if word not in stop_words:
+                filtered.append((word,count))
+        word_count_dict = dict(filtered)
         temp_sf = graphlab.SFrame({'track_id':[track], 'bag_of_words':[word_count_dict]})
         sf = sf.append(temp_sf)
         if i%500==0: print '{} tracks completed'.format(i)
@@ -116,6 +123,9 @@ def new_complete_to_csv():
     print 'Complete'
 
 def aws_complete_to_csv():
+    stop_words = stopwords.words('english') + stopwords.words('spanish') + \
+                 stopwords.words('german') + stopwords.words('french')
+
     path = '../data/{}'
     conn = sqlite3.connect(path.format('mxm_dataset.db'))
     with open(path.format('vocab.txt')) as f:
@@ -134,15 +144,19 @@ def aws_complete_to_csv():
     print 'Writing to DataFrame...'
     for i,track in enumerate(tracks):
         q_ = q.format(track)
-        # word_counts = conn.execute(q_).fetchall()
-        word_count_dict = dict(conn.execute(q_).fetchall())
+        word_counts = conn.execute(q_).fetchall()
+        filtered = []
+        for word, count in word_counts:
+            if word not in stop_words:
+                filtered.append((word,count))
+        word_count_dict = dict(filtered)
         temp_sf = graphlab.SFrame({'track_id':[track], 'bag_of_words':[word_count_dict]})
         sf = sf.append(temp_sf)
         if i%500==0: print '{} tracks completed'.format(i)
     conn.close()
     print 'Done writing to DataFrame'
     print 'Writing to csv...'
-    out = 'aws_complete_sframe_bow.csv'
+    out = path.format('aws_complete_sframe_bow.csv')
     sf.save(out)
     print 'Complete'
 

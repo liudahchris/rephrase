@@ -9,25 +9,6 @@ from sklearn.decomposition import LatentDirichletAllocation as LDA
 import graphlab
 import pandas as pd
 
-
-def drop_empty(df):
-    '''Drops rows of data where values are all 0'''
-    to_drop = []
-    for ind in df.index:
-        if df.loc[ind].sum()==0:
-            to_drop.append(ind)
-    return df.drop(to_drop)
-
-def drop_stop_words(df):
-    '''Drops columns of dataframe representing stopwords'''
-    stop_words = stopwords.words('english') + stopwords.words('spanish') + \
-                 stopwords.words('german') + stopwords.words('french')
-    col_keep = []
-    for word in df.columns:
-        if word not in stop_words:
-            col_keep.append(word)
-    return df[col_keep]
-
 def s3_upload_string(bucket_name,data,fname):
     access_key, secret_access_key = get_aws_access()
     conn = boto.connect_s3(access_key, secret_access_key)
