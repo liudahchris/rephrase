@@ -1,10 +1,5 @@
 import os
 import sys
-import time
-import glob
-import datetime
-import sqlite3
-import numpy as np
 
 def setup_path():
     # path to the Million Song Dataset code

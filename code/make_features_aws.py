@@ -9,8 +9,9 @@ import numpy as np
 import sqlite3
 import boto
 
-from setup_path_aws import setup_path
-setup_path()
+msd_code_path='/home/ubuntu/project/helper_functions/MSongsDB'
+assert os.path.isdir(msd_code_path),'wrong path' # sanity check
+sys.path.append( os.path.join(msd_code_path,'PythonSrc') )
 import hdf5_getters as GETTERS
 
 def condense_segments(arr,new_size=4):
