@@ -35,5 +35,5 @@ if __name__=='__main__':
 
     BUCKETNAME = 'liudahchris'
     fname = 'track_metadata.db'
-    path = '/mnt/snap/AdditionalFiles'.format(fname)
+    path = '/mnt/snap/AdditionalFiles/{}'.format(fname)
     s3_upload_filename(BUCKETNAME,path,fname)
