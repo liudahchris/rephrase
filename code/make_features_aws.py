@@ -7,6 +7,7 @@ import datetime
 import pandas as pd
 import numpy as np
 import sqlite3
+import boto
 
 from setup_path import setup_path
 setup_path()
@@ -93,10 +94,24 @@ def make_segment_cols(colname,num_vals,num_segments=4):
     s = 'seg{}'+colname+'{}'
     return [s.format(i,j) for i in range(1,num_segments+1) for j in range(1,num_vals+1)]
 
+def get_aws_access():
+    return os.enrivon['AWS_ACCESS_KEY'], os.environ['AWS_SECRET_ACCESS_KEY']
+
+def s3_upload_file(bucketname,data,fname='aws_features.csv'):
+    access_key, secret_access_key = get_aws_access()
+	conn = boto.connect_s3(access_key, secret_access_key)
+
+	if conn.lookup(bucket_name) is None:
+	    bucket = conn.create_bucket(bucket_name, policy='public-read')
+	else:
+	    bucket = conn.get_bucket(bucket_name)
+
+
+	key = bucket.new_key(fname)
+	key.set_contents_fromstring(data.to_csv())
 
 if __name__=='__main__':
     NUM_SEGMENTS = 4
-    data_path = '/home/project/{}'
 
     msd_subset_path='/mnt/snap/'
     msd_subset_data_path=os.path.join(msd_subset_path,'data')
@@ -108,4 +123,7 @@ if __name__=='__main__':
         cols+=make_segment_cols(feat,num,NUM_SEGMENTS)
     data = make_data(NUM_SEGMENTS)
     df = pd.DataFrame(data=data,columns=cols).set_index('track_id')
-    df.to_csv(data_path.format('features_4_segments.csv'))
+    del data
+
+    bucket_name = 'liudahchris'
+    s3_upload_file('liudahchris',df)
