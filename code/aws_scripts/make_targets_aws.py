@@ -92,7 +92,7 @@ def main():
     X,lda = train_lda(n_topics=N)
 
     # Write some descriptive results
-    DB_PATH='/mnt/snap/AdditionalFiles/track_metadata.db'
+    DB_PATH='/home/ubuntu/project/data/track_metadata.db'
     s3_upload_string(BUCKETNAME,write_description(lda,X,df,DB_PATH),'lda_description.txt')
 
     # Generate and write target files
@@ -107,6 +107,6 @@ def main():
 
     # Save pickled model
     pickle_object(lda,'lda')
-    
+
 if __name__=='__main__':
     main()
