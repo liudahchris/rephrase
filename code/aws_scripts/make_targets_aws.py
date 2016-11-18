@@ -85,25 +85,31 @@ def pickle_object(something, name):
 def main():
     BUCKETNAME = 'liudahchris'
     # Load and clean data
+    print "LOADING DATAFRAME..."
     df = clean_data()
+    print "LOADING COMPLETE..."
 
     # Perform LDA
     N = 15
     X,lda = train_lda(n_topics=N)
+    print "TRAINING MODEL..."
+    lda = LDA(n_topics=n_topics,learning_method='online',n_jobs=-1)
+    lda.fit(df)
+    print "TRAINING COMPLETE..."
 
     # Write some descriptive results
-    DB_PATH='/home/ubuntu/project/data/track_metadata.db'
-    s3_upload_string(BUCKETNAME,write_description(lda,X,df,DB_PATH),'lda_description.txt')
+    # DB_PATH='/home/ubuntu/project/data/track_metadata.db'
+    # s3_upload_string(BUCKETNAME,write_description(lda,X,df,DB_PATH),'lda_description.txt')
 
     # Generate and write target files
-    labels = np.argmax(X,axis=1)
-    labeled_df = pd.DataFrame(data=labels,index=df.index)
-    s3_upload_string(BUCKETNAME,labeled_df.to_csv(),'aws_classification_targets.csv')
-    del labeled_df
+    # labels = np.argmax(X,axis=1)
+    # labeled_df = pd.DataFrame(data=labels,index=df.index)
+    # s3_upload_string(BUCKETNAME,labeled_df.to_csv(),'aws_classification_targets.csv')
+    # del labeled_df
 
-    composition_df = pd.DataFrame(data=X,index=df.index)
-    s3_upload_string(BUCKETNAME,labeled_df.to_csv(),'aws_lda_composition.csv')
-    del composition_df
+    # composition_df = pd.DataFrame(data=X,index=df.index)
+    # s3_upload_string(BUCKETNAME,labeled_df.to_csv(),'aws_lda_composition.csv')
+    # del composition_df
 
     # Save pickled model
     pickle_object(lda,'lda')
