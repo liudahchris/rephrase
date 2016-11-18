@@ -98,7 +98,7 @@ def make_segment_cols(colname,num_vals,num_segments=4):
 def get_aws_access():
     return os.environ['AWS_ACCESS_KEY'], os.environ['AWS_SECRET_ACCESS_KEY']
 
-def s3_upload_file(bucketname,data,fname='aws_features.csv'):
+def s3_upload_file(bucket_name,data,fname):
     access_key, secret_access_key = get_aws_access()
     conn = boto.connect_s3(access_key, secret_access_key)
     if conn.lookup(bucket_name) is None:
@@ -106,7 +106,7 @@ def s3_upload_file(bucketname,data,fname='aws_features.csv'):
     else:
         bucket = conn.get_bucket(bucket_name)
     key = bucket.new_key(fname)
-    key.set_contents_fromstring(data.to_csv())
+    key.set_contents_from_string(data)
 
 if __name__=='__main__':
     NUM_SEGMENTS = 4
@@ -124,4 +124,4 @@ if __name__=='__main__':
     del data
 
     bucket_name = 'liudahchris'
-    s3_upload_file(bucket_name,df)
+    s3_upload_file(bucket_name,df.to_csv())

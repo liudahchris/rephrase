@@ -35,6 +35,12 @@ def main():
     # Perform LDA
     n_topics = 15
     lda = LDA(n_topics=n,max_iter=30,learning_method='online',n_jobs=-1)
+    X = lda.fit_transform(df)
 
+    labels = np.argmax(X,axis=1)
+    c = Counter(labels)
+    labeled_df = pd.DataFrame(data=labels,index=df.index)
+    labeled_df.to_csv()
+    
 if __name__=='__main__':
     main()
