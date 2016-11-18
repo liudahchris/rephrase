@@ -116,7 +116,7 @@ def new_complete_to_csv():
     print 'Complete'
 
 def aws_complete_to_csv():
-    path = '../lyrics/{}'
+    path = '../data/{}'
     conn = sqlite3.connect(path.format('mxm_dataset.db'))
     with open(path.format('vocab.txt')) as f:
         vocab = f.read().split(',')
@@ -142,7 +142,7 @@ def aws_complete_to_csv():
     conn.close()
     print 'Done writing to DataFrame'
     print 'Writing to csv...'
-    out = '~/project/aws_complete_sframe_bow.csv'
+    out = 'aws_complete_sframe_bow.csv'
     sf.save(out)
     print 'Complete'
 
