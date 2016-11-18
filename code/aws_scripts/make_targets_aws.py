@@ -1,4 +1,4 @@
-import pandas as pd
+# import pandas as pd
 import numpy as np
 import sqlite3
 from nltk.corpus import stopwords
@@ -6,6 +6,9 @@ from unidecode import unidecode
 from collections import Counter
 import cPickle as pickle
 from sklearn.decomposition import LatentDirichletAllocation as LDA
+import graphlab
+import pandas as pd
+
 
 def drop_empty(df):
     '''Drops rows of data where values are all 0'''
@@ -85,34 +88,37 @@ def pickle_object(something, name):
 def main():
     BUCKETNAME = 'liudahchris'
     # Load and clean data
-    print "LOADING DATAFRAME..."
-    df = clean_data()
-    print "LOADING COMPLETE..."
+    # print "LOADING DATAFRAME..."
+    # df = clean_data()
+    # print "LOADING COMPLETE..."
 
+    print "LOADING SFRAME..."
+    sf = graphlab.SFrame(data='../data/aws_complete_bow.csv')
+    print "LOADING COMPLETE"
     # Perform LDA
-    N = 15
-    X,lda = train_lda(n_topics=N)
-    print "TRAINING MODEL..."
-    lda = LDA(n_topics=n_topics,learning_method='online',n_jobs=-1)
-    lda.fit(df)
-    print "TRAINING COMPLETE..."
-
+    # N = 15
+    # X,lda = train_lda(n_topics=N)
+    # print "TRAINING MODEL..."
+    # lda = LDA(n_topics=n_topics,learning_method='online',n_jobs=-1)
+    # lda.fit(df)
+    # print "TRAINING COMPLETE..."
+    #
     # Write some descriptive results
     # DB_PATH='/home/ubuntu/project/data/track_metadata.db'
     # s3_upload_string(BUCKETNAME,write_description(lda,X,df,DB_PATH),'lda_description.txt')
-
+    #
     # Generate and write target files
     # labels = np.argmax(X,axis=1)
     # labeled_df = pd.DataFrame(data=labels,index=df.index)
     # s3_upload_string(BUCKETNAME,labeled_df.to_csv(),'aws_classification_targets.csv')
     # del labeled_df
-
+    #
     # composition_df = pd.DataFrame(data=X,index=df.index)
     # s3_upload_string(BUCKETNAME,labeled_df.to_csv(),'aws_lda_composition.csv')
     # del composition_df
-
+    #
     # Save pickled model
-    pickle_object(lda,'lda')
+    # pickle_object(lda,'lda')
 
 if __name__=='__main__':
     main()
