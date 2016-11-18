@@ -55,7 +55,7 @@ def make_data(num_segments=4):
     q = 'SELECT DISTINCT track_id FROM lyrics;'
     tracks = [track[0] for track in conn.execute(q).fetchall()]
     print 'Done fetching Track IDs'
-    
+
     list_of_rows = []
 
     def func_to_get_track_data(filename):
@@ -96,7 +96,7 @@ def make_segment_cols(colname,num_vals,num_segments=4):
 
 if __name__=='__main__':
     NUM_SEGMENTS = 4
-    data_path = 'home/project/{}'
+    data_path = '/home/project/{}'
 
     msd_subset_path='/mnt/snap/'
     msd_subset_data_path=os.path.join(msd_subset_path,'data')
