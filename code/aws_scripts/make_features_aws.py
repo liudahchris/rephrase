@@ -124,4 +124,4 @@ if __name__=='__main__':
     del data
 
     bucket_name = 'liudahchris'
-    s3_upload_file(bucket_name,df.to_csv())
+    s3_upload_file(bucket_name,df.to_csv(),'aws_complete_features.csv')
