@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import sqlite3
 from unidecode import unidecode
+import boto
+import os
 
 def write_to_csv():
     path = '../data/lyrics/data/{}'
@@ -109,9 +111,13 @@ def aws_complete_to_csv():
     conn.close()
     print 'Done writing to DataFrame'
     print 'Writing to csv...'
-    out = path.format('aws_complete_bow.csv')
+    out = '~/project/aws_complete_bow.csv'
     df.to_csv(out)
     print 'Complete'
 
+
 if __name__=='__main__':
+    # access_key = os.environ['AWS_ACCESS_KEY']
+    # secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
+    # conn = boto.connect_s3(access_key, access_secret_key)
     aws_complete_to_csv()
