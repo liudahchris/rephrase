@@ -9,7 +9,7 @@ import numpy as np
 import sqlite3
 import boto
 
-from setup_path import setup_path
+from setup_path_aws import setup_path
 setup_path()
 import hdf5_getters as GETTERS
 
