@@ -6,7 +6,7 @@ from unidecode import unidecode
 from collections import Counter
 import cPickle as pickle
 from sklearn.decomposition import LatentDirichletAllocation as LDA
-import graphlab
+import graphlab as gl
 import pandas as pd
 
 def s3_upload_string(bucket_name,data,fname):
@@ -68,14 +68,13 @@ def pickle_object(something, name):
 
 def main():
     BUCKETNAME = 'liudahchris'
-    # Load and clean data
-    # print "LOADING DATAFRAME..."
-    # df = clean_data()
-    # print "LOADING COMPLETE..."
 
     print "LOADING SFRAME..."
-    sf = graphlab.SFrame(data='../data/aws_complete_bow.csv')
+    sf = gl.SFrame(data='../data/aws_complete_sframe_bow.csv')
     print "LOADING COMPLETE"
+
+    model = gl.topic_model.create(dataset=sf['bag_of_words'])
+
     # Perform LDA
     # N = 15
     # X,lda = train_lda(n_topics=N)
