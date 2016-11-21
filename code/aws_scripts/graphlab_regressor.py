@@ -10,7 +10,8 @@ if __name__=='__main__':
     del features
 
     train, test = sf.random_split(0.9)
-    train = train.to_dataframe()
+    train = train.to_dataframe().drop('track_id')
+    train.fillna(-1000)
     y_train = train.pop('X1')
     rf = RandomForestRegressor(n_estimators=100,verbose=1)
     rf.fit(train,y_train)
@@ -19,6 +20,7 @@ if __name__=='__main__':
     del y_train
 
 
-    test = test.to_dataframe()
+    test = test.to_dataframe().drop('track_id')
+    test.fillna(=1000)
     y_test = test.pop('X1')
     rf.score(test,y_test)
