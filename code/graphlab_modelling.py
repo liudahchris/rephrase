@@ -1,4 +1,5 @@
 import graphlab as gl
+from sklearn.ensemble import RandomForestClassifier
 
 def load_data():
     features_path = 'https://s3-us-west-2.amazonaws.com/liudahchris/aws_complete_features.csv'
@@ -9,7 +10,12 @@ def load_data():
 
 def make_model():
     sf = load_data()
-    model = gl.classifier.create(sf,target='labels')
+    # model = gl.classifier.create(sf,target='labels')
+    train, test = sf.random_split(0.9)
+    model = gl.random_forest_classifier.create(train,target='labels')
+
+    results = model.evaluate(test)
+
 
 if __name__=='__main__':
     sf = load_data()
