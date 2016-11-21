@@ -8,7 +8,7 @@ if __name__=='__main__':
     sf = sf.join(features, on='track_id')
     del features
 
-    train, test = gl.random_split(0.9)
+    train, test = sf.random_split(0.9)
+    del sf
     train = train.to_dataframe()
     y_train = train.pop('labels')
-    
