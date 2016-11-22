@@ -4,7 +4,8 @@ import numpy as np
 from collections import Counter
 
 def load_sframe():
-    path = 'https://s3-us-west-2.amazonaws.com/liudahchris/aws_complete_sframe_bow.csv'
+    # path = 'https://s3-us-west-2.amazonaws.com/liudahchri/aws_complete_sframe_bow.csv'
+    path = '../data/aws_complete_sframe_bow.csv'
     return gl.SFrame(path)
 
 def majority_vote(s_arr):
