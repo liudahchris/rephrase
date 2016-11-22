@@ -47,3 +47,6 @@ def main():
 
     # FNAME = 'graphlab_probas.csv'
     # sf[['track_id','probas']].save(FNAME)
+
+if __name__=='__main__':
+    main()
