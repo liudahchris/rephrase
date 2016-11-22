@@ -1,6 +1,7 @@
 import graphlab as gl
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+import numpy as np
 
 def sklearn_regressor(sf):
     train, test = sf.random_split(0.9)
@@ -35,9 +36,9 @@ if __name__=='__main__':
 
     models = []
     preds = []
-    for i in xrange(regression_values.shape[1]):
+    for i in xrange(train_regress_vals.shape[1]):
         train['target'] = train_regress_vals[:,i]
-        model = sf.random_forest_regression.create(train,target='target')
+        model = gl.random_forest_regression.create(train,target='target')
         model.save('../models/model_{}'.format(i))
         # test['target'] = test_regress_vals[:,i]
         preds.append(model.predict(test).to_numpy())
