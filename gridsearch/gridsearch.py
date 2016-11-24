@@ -19,7 +19,8 @@ def run_grid_search(params,outname=None):
                                 )
 
     if outname:
-        job.save(outname)
+        result = job.get_results()
+        result.save(outname)
 
 def test():
     params = {'target': 'labels',
