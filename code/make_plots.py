@@ -23,6 +23,39 @@ def make_heatmap(sim,names=None,outname=None):
     plt.show()
     return
 
+def sound_similarity_plot(centers,mask=None,outname=None):
+    topic_names = np.array(['Nature','Music','French', 'Love in the Night',\
+                    'Pain/Death', 'Protest','Party','Dream',\
+                    'Spanish','Girl','Heartbreak','Dating',\
+                    'Regret/Past','Time','German','Growing Up',\
+                    'Italian','Falling in Love','Gangster Rap',\
+                    'Noise','Aggression','Trust/Distrust',\
+                    'Departure','Religion','Exploration'])
+    if mask:
+        topic_names = topic_names[mask]
+        centers = centers[mask]
+
+    sim = cosine_similarity(centers)
+    make_heatmap(sim=sim,names=topic_names,outname=outname)
+
+def get_topics():
+    lda = gl.load_model('../lda_25topics')
+    topics = lda.get_topics(output_type='topic_words')
+    topic_names = []
+    for topic in topics:
+        topic_names.append(' '.join(topic['words']))
+    return topic_names
+
+def normalized_centers(X,y):
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+    centers = []
+    for i in xrange(len(np.unique(y))):
+        mask = np.where(y==i)
+        centers.append(X[mask].mean(axis=0))
+    return np.array(centers)
+
+
 def main():
     sf = load_data()
     y = sf['labels'].to_numpy()
@@ -30,26 +63,13 @@ def main():
 
     scaler = StandardScaler()
     X = scaler.fit_transform(sf.to_numpy())
-    centers = []
-    for i in xrange(25):
-        mask = np.where(y==i)
-        centers.append(X[mask].mean(axis=0))
-    centers = np.array(centers)
+    centers = normalized_centers(X,y)
 
-    mask = np.array([0,1,2,3,7,16,17,19,23,10,15,22,24,8,\
-                    10,15,22,24,8,11,13,14,21,20,18,4,5,6,9])
-    sorted_centers = centers[mask]
+    # mask = np.array([0,1,2,3,7,16,17,19,23,10,15,22,24,8,\
+    #                 10,15,22,24,8,11,13,14,21,20,18,4,5,6,9])
 
-    lda = gl.load_model('../lda_25topics')
-    topics = lda.get_topics(output_type='topic_words')
-    topic_names = []
-    for topic in topics:
-        topic_names.append(' '.join(topic['words']))
-
-    topic_names = np.array(topic_names)[mask]
-
-    sim = cosine_similarity(sorted_centers)
-    make_heatmap(sim,topic_names)
+    mask = [0,1,16,15,8,14,18]
+    sound_similarity_plot(centers,mask)
 
 if __name__=='__main__':
     main()
