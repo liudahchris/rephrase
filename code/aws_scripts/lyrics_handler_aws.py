@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 
 def complete_to_csv(f_out='sframe_bow.csv'):
     '''
-    Extracts lyrics from sqlite database and saves it in Graphlab form.
+    Extracts lyrics from sqlite database and saves it in Graphlab SFrame form.
     INPUT: Output file name
     OUTPUT: None
     '''
