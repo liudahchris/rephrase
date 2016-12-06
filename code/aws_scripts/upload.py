@@ -29,15 +29,7 @@ def s3_upload_filename(bucket_name,path,fname):
 
 
 if __name__=='__main__':
-    # BUCKETNAME = 'liudahchris-test-bucket'
-    # FNAME = 'test_file.csv'
-    # df = pd.DataFrame(data=np.array([range(0,5),range(5,10)]))
-    # s3_upload_string(BUCKETNAME,df.to_csv(),FNAME)
-    #
     BUCKETNAME = 'liudahchris'
-    # fname = 'track_metadata.db'
-    # path = '/mnt/snap/AdditionalFiles/{}'.format(fname)
-    # s3_upload_filename(BUCKETNAME,path,fname)
 
     # LOCAL UPLOAD
     fname = sys.argv[1]

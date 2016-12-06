@@ -92,6 +92,11 @@ def make_data(num_segments=4):
     return list_of_rows
 
 def make_segment_cols(colname,num_vals,num_segments=4):
+    '''
+    Make a list of column names for various segmented features, e.g. loudness, pitch, timbre.
+    INPUT: Column Name, Number of Values, Number of Segments
+    OUTPUT: List of formatted column names
+    '''
     s = 'seg{}'+colname+'{}'
     return [s.format(i,j) for i in range(1,num_segments+1) for j in range(1,num_vals+1)]
 
